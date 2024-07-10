@@ -1,0 +1,54 @@
+{
+  "$schema": "https://www.raycast.com/schemas/extension.json",
+  "name": "call-me-maybe",
+  "title": "Call Me Maybe",
+  "description": "Is XMatters going to call me?",
+  "icon": "icon.png",
+  "author": "austincrim",
+  "keywords": [
+    "xmatters"
+  ],
+  "license": "MIT",
+  "commands": [
+    {
+      "name": "index",
+      "title": "Show On Call",
+      "description": "Who's on call right now?",
+      "mode": "menu-bar",
+      "interval": "8h"
+    }
+  ],
+  "preferences": [
+    {
+      "name": "apiKey",
+      "title": "xMatters User API Key",
+      "description": "The User API Key found in your xMatters profile",
+      "required": true,
+      "type": "textfield"
+    },
+    {
+      "name": "apiCredential",
+      "title": "xMatters API credential",
+      "description": "The API Credential generated in your xMatters profile",
+      "required": true,
+      "type": "password"
+    }
+  ],
+  "dependencies": {
+    "@raycast/api": "^1.75.0",
+    "@raycast/utils": "^1.15.0",
+    "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "@types/node": "^18.8.3",
+    "@types/react": "^18.3.2",
+    "prettier": "^3.2.5",
+    "typescript": "^5.4.5"
+  },
+  "scripts": {
+    "dev": "ray develop",
+    "build": "ray build -e dist",
+    "fix-lint": "ray lint --fix",
+    "lint": "ray lint"
+  }
+}
