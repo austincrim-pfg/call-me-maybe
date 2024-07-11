@@ -1,14 +1,14 @@
+import { useEffect, useState } from "react"
 import { Icon, MenuBarExtra, getPreferenceValues, open } from "@raycast/api"
 import { runAppleScript, useCachedPromise } from "@raycast/utils"
 import fetch from "node-fetch"
 import { Agent } from "node:https"
-import { useEffect, useState } from "react"
 
 interface Preferences {
   apiKey: string
   apiCredential: string
 }
-const API = `https://principalfinancial.xmatters.com/api/xm/1/on-call?groups=mobileapp`
+const API = `https://principalfinancial.xmatters.com/api/xm/1/on-call-summary?groups=mobileapp`
 let agent = new Agent({
   rejectUnauthorized: false,
 })
@@ -25,24 +25,22 @@ export default function Command() {
         },
         agent,
       })
-      let { data } = (await res.json()) as any
+      let data = (await res.json()) as any
 
-      let primaryName = getFullName(data[0].members.data[0].member)
+      let primaryName = getFullName(data[0].recipient)
       let username = await runAppleScript(`
-    tell application "System Events"
-      full name of current user
-    end tell
-    `)
+        tell application "System Events"
+          full name of current user
+        end tell
+      `)
 
       let isCurrentUserPrimary = primaryName === username
-      let saved = { members: data[0].members.data, isCurrentUserPrimary }
-
-      return saved
+      return { members: data, isCurrentUserPrimary }
     },
     [],
     {
       initialData: {
-        members: [{ member: { firstName: "Loading", lastName: "user..." } }],
+        members: [{ recipient: { firstName: "Loading", lastName: "user..." } }],
         isCurrentUserPrimary: false,
       },
     }
@@ -59,12 +57,12 @@ export default function Command() {
       title={data?.isCurrentUserPrimary ? "I'm on call" : ""}
     >
       <MenuBarExtra.Section title="Primary">
-        <MenuBarExtra.Item title={getFullName(data.members[0].member)} />
+        <MenuBarExtra.Item title={getFullName(data.members[0].recipient)} />
       </MenuBarExtra.Section>
       {data.members.length >= 2 ? (
         <MenuBarExtra.Section title="Backups">
-          <MenuBarExtra.Item title={getFullName(data.members[1].member)} />
-          <MenuBarExtra.Item title={getFullName(data.members[2].member)} />
+          <MenuBarExtra.Item title={getFullName(data.members[1].recipient)} />
+          <MenuBarExtra.Item title={getFullName(data.members[2].recipient)} />
         </MenuBarExtra.Section>
       ) : (
         <></>
